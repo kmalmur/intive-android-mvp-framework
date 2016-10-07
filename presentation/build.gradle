@@ -1,15 +1,22 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+
 android {
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "com.intive.intivemvpframework"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+
+        multiDexEnabled true
+
+        versionCode globalConfiguration.getAt("androidVersionCode")
+        versionName globalConfiguration.getAt("androidVersionName")
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -19,20 +26,54 @@ android {
     }
 
     lintOptions {
-        quiet true
         abortOnError false
-        ignoreWarnings true
         disable 'InvalidPackage'            //Some libraries have issues with this.
         disable 'OldTargetApi'              //Lint gives this warning but SDK 20 would be Android L Beta.
         disable 'IconDensities'             //For testing purpose. This is safe to remove.
         disable 'IconMissingDensityFolder'  //For testing purpose. This is safe to remove.
     }
 
-    buildTypes {
+    signingConfigs {
+        debug {
+            storeFile file('../keystore/debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+
         release {
+            //NOTE: the release keystore is not in the repository, it must be placed there by the CI tool (or manually on the local PC).
+            // Jenkins CI will be configured so that, the keystore file will be uploaded by the user for every build, along with the keystore credentials
+            //
+            // In case you want to be able to build the release build locally, you can copy the debug.keystore to release.keystore, the credentials will be
+            // applied automatically
+            storeFile file('../keystore/release.keystore')
+            storePassword System.getenv("KEYSTORE_PASSWORD") ?: "android"
+            keyAlias System.getenv("KEY_ALIAS") ?: "androiddebugkey"
+            keyPassword System.getenv("KEY_PASSWORD") ?: "android"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".debug"
+            debuggable true
+            buildConfigField 'String', 'BACKEND_URL', '"http://example.com/integration"'
+        }
+
+        release {
+            signingConfig signingConfigs.release
+            debuggable false
             minifyEnabled false
+            buildConfigField 'String', 'BACKEND_URL', '"http://example.com/production"'
+
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    dexOptions {
+        jumboMode true
     }
 }
 
