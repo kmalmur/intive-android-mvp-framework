@@ -53,7 +53,7 @@ public class UserDataRepository implements UserRepository {
 
     @Override
     public Observable<List<User>> users() {
-        return mRestApi.userEntityList().map(new Func1<List<UserEntity>, List<User>>() {
+        return mRestApi.getUserEntityList().map(new Func1<List<UserEntity>, List<User>>() {
             @Override
             public List<User> call(final List<UserEntity> userEntities) {
                 return mUserEntityDataMapper.transform(userEntities);
@@ -63,7 +63,7 @@ public class UserDataRepository implements UserRepository {
 
     @Override
     public Observable<User> user(final int userId) {
-        return mRestApi.userEntityById(userId)
+        return mRestApi.getUserEntityById(userId)
                 .map(new Func1<UserEntity, User>() {
                     @Override
                     public User call(final UserEntity userEntities) {
