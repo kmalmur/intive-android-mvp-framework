@@ -76,9 +76,7 @@ public class UserDetailsPresenter extends MvpBasePresenter<UserDetailsView> {
     }
 
     private void getUserDetails() {
-        mGetUserDetailsSubscription = mGetUserDetailsUseCaseUseCase.buildUseCaseObservable(mUserId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mGetUserDetailsSubscription = mGetUserDetailsUseCaseUseCase.execute(mUserId)
                 .subscribe(new UserDetailsSubscriber());
     }
 

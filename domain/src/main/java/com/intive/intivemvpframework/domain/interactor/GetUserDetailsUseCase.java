@@ -7,16 +7,18 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-public class GetUserDetailsUseCase {
+public class GetUserDetailsUseCase extends UseCase<Integer, User> {
 
-    private final UserRepository userRepository;
+    private final UserRepository mUserRepository;
 
     @Inject
-    public GetUserDetailsUseCase(final UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public GetUserDetailsUseCase(final UserRepository userRepository, final ComposedScheduler composedScheduler) {
+        super(composedScheduler);
+        mUserRepository = userRepository;
     }
 
-    public Observable<User> buildUseCaseObservable(final int userId) {
-        return userRepository.user(userId);
+    @Override
+    protected Observable<User> createUseCaseObservable(final Integer userId) {
+        return mUserRepository.user(userId);
     }
 }

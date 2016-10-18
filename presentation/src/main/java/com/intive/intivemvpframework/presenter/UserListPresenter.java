@@ -15,8 +15,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @PerActivity
@@ -73,9 +71,7 @@ public class UserListPresenter extends MvpBasePresenter<UserListView> {
     }
 
     private void getUserList() {
-        mGetUserListUseCaseSubscription = mGetUserListUseCase.buildUseCaseObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        mGetUserListUseCaseSubscription = mGetUserListUseCase.execute(null)
                 .subscribe(new UserListSubscriber());
     }
 
