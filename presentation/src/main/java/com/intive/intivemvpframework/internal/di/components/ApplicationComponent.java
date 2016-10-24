@@ -1,5 +1,6 @@
 package com.intive.intivemvpframework.internal.di.components;
 
+import com.intive.intivemvpframework.domain.interactor.ComposedScheduler;
 import com.intive.intivemvpframework.domain.repository.UserRepository;
 import com.intive.intivemvpframework.internal.di.modules.ApplicationModule;
 import com.intive.intivemvpframework.view.activity.BaseActivity;
@@ -23,4 +24,6 @@ public interface ApplicationComponent {
     Context context();
 
     UserRepository userRepository();
+
+    ComposedScheduler composedScheduler();
 }

@@ -9,16 +9,18 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-public class GetUserListUseCase {
+public class GetUserListUseCase extends UseCase<Void, List<User>> {
 
-    private final UserRepository userRepository;
+    private final UserRepository mUserRepository;
 
     @Inject
-    public GetUserListUseCase(final UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public GetUserListUseCase(final UserRepository userRepository, final ComposedScheduler composedScheduler) {
+        super(composedScheduler);
+        mUserRepository = userRepository;
     }
 
-    public Observable<List<User>> buildUseCaseObservable() {
-        return this.userRepository.users();
+    @Override
+    protected Observable<List<User>> createUseCaseObservable(final Void param) {
+        return mUserRepository.users();
     }
 }
